@@ -1,0 +1,3 @@
+hardhat diamond:deploy
+hardhat diamond:add --remote --save-metadata --address  0x3D004D6B32D5D6A5e7B7504c3dac672456ed95dB
+hardhat diamond:cut
