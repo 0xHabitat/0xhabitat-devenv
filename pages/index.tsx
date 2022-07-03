@@ -1,23 +1,42 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
-import { MyToken__factory } from '../types/ethers-contracts'
-import diamond from "../diamond.json"
-import { ethers } from 'ethers'
+import { useEtherBalance, useEthers } from '@usedapp/core'
+import { formatEther } from 'ethers/lib/utils'
+import generateUseDiamond from '../utils/generateUseDiamond'
+import diamond from '../diamond.json'
 
 const Home: NextPage = () => {
-  if (typeof window !== "undefined") {
-    const provider = new ethers.providers.Web3Provider((window as any).ethereum)
-    provider.send("eth_requestAccounts", []).then(accounts => {
-      const signer = provider.getSigner()
-      const myToken = MyToken__factory.connect(diamond.address, signer)
-      myToken.initMyToken("SD", "sd", 8, '0xDEC3e07D46c46C089a323D62E60826D03716d7a2')
-    });
+  const { account, library, activateBrowserWallet } = useEthers()
+
+  const useDiamond = generateUseDiamond(diamond.address, account ? library?.getSigner() as any : undefined)
+
+  const initToken = () => {
+    useDiamond.initMyToken.send('SD', 'sd', 8, '0xDEC3e07D46c46C089a323D62E60826D03716d7a2')
   }
-  
+
+  const balance = useDiamond.balanceOf('0xDEC3e07D46c46C089a323D62E60826D03716d7a2')
+
+
+  const etherBalance = useEtherBalance(account)
+
   return (
-    <div>ciao</div>
+    <div>
+      <div>
+        <button onClick={() => activateBrowserWallet()}>Connect</button>
+      </div>
+      {account && <div>
+        <>
+        Account: {account}<br/>
+        Balance: {balance?.toString()}<br />
+        {etherBalance && (
+        <div className="balance">
+          Ether balance:
+          <p className="bold">{formatEther(etherBalance)} ETH</p>
+        </div>
+      )}
+        <button onClick={initToken}>init</button>
+        </>
+      </div>}
+    </div>
   )
 }
 

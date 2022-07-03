@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@solidstate/contracts": "^0.0.35",
+    "@usedapp/core": "^1.0.15",
     "hardhat-gemcutter": "https://github.com/marcocastignoli/hardhat-gemcutter",
     "next": "12.1.6",
     "react": "18.2.0",
