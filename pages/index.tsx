@@ -17,9 +17,9 @@ const Home: NextPage = () => {
   )
 
   // For write functions
-  const { state: stateInit } = useDiamond.initMyToken
+  const { state: stateInit, send: sendInitMyToken } = useDiamond.initMyToken
   const initToken = () => {
-    useDiamond.initMyToken.send(
+    sendInitMyToken(
       'SD',
       'sd',
       8,
@@ -27,9 +27,9 @@ const Home: NextPage = () => {
     )
   }
 
-  const { state: stateTransfer } = useDiamond.transfer
+  const { state: stateTransfer, send: sendTransfer } = useDiamond.transfer
   const transfer = () => {
-    useDiamond.transfer.send('0xF64D868cfDb1Ad4C3589452Ac541CB851e2E80e4', 10)
+    sendTransfer('0xF64D868cfDb1Ad4C3589452Ac541CB851e2E80e4', 10)
   }
 
   return (
