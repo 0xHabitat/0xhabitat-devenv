@@ -1,34 +1,126 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Gemx.js
+What happens when you combine nextjs + hardhat + gemcutter + typechain + useDapp
 
-## Getting Started
+## Gemcutter
 
-First, run the development server:
+Gemcutter is a simple way to work on EIP-2545 Diamonds
+ 
+### diamond.json
+
+The diamond.json is a temporary file that rappresents the state of the deployed diamond. The developer edits the diamond.json file and then uses gemcutter's tool to synchronize the changes to the deployed diamond. Gemcutter offers a series of functions to work with the diamond.json.
+
+The diamond.json is not committed on github because its values depends on the local development environment. Instead the user will commit a DIAMONDFILE, a file containing all the operations used to generate the same diamond.json in every dev env.
+
+### Gemcutter actions
 
 ```bash
-npm run dev
-# or
-yarn dev
+npx hardhat diamond:init
+```
+Generates a diamond.json file starting from a DOCKERFILE
+
+```bash
+npx hardhat diamond:deploy
+```
+Used to initialize a new diamond, deploying an empy diamond, and creating a diamond.json that rappresents that diamond
+
+```bash
+npx hardhat diamond:add --remote --save-metadata --address 0x3D004D6B32D5D6A5e7B7504c3dac672456ed95dB
+```
+Used to add a facet to the diamond.json file (not on the deployed contract).
+* `--remote` to add a remote facet, `--address` is mandatory. With `--save-metadata` the metadata of the contracts are extracted from the bytecode and saved in the *./metadata/* folder.
+* `--local` to add a local facet, `--name` is mandatory (the name of the facet in the *./contracts/* folder)
+
+```bash
+npx hardhat diamond:cut --init-facet MyToken --init-fn initMyToken --init-params "Habitat,HBT,8,0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"
+```
+Used to synchronize the changes between the local diamond.json file and the deployed diaomond.
+* `--init-facet` used to specify the facet from which to use the function to pass to the *_init* function in the cut.
+* `--init-fn` the function to pass to the *_init* function in the cut
+* `--init-params` the parameters to pass to the *_init* function in the cut
+
+### DIAMONDFILE
+
+The DIAMONDFILE contains the set of instructions to deploy a diamond and cut all the necessary facets. While developing the developer will call `diamond:add` and `diamond:cut` but efore committing the developer must update the DIAMONDFILE so it includes all the *adds* and *cuts* she made.
+
+### Local node
+
+Everything works only when the `hardhat node` is running. If the developer publishes new facets with the `--local` flag, each time it reruns the local node, it must recreate the diamond.json file redeploying the diamond on the local network.
+
+### Network forking
+
+Right now the basic facets (*DiamondCutFacet*, *DiamondInit*, *DiamondLoupeFacet*, *OwnershipFacet*) are deployed on rinkeby, in the future the system will use create2 to have always the same address so it will not be mandatory to fork rinkeby to work with Gemx.js.
+Also in the future the `diamon:add` task will have a `--ens` parameter so the developer can add facets passing a meaningful name.
+
+E.g.
+```bash
+npx hardhat diamond:add --remote --save-metadata --ens erc20.facets.eth
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Gemx
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Running the local node
+```bash
+yarn start:node
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### Initialize a diamond.json from a DIAMONDFILE
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```bash
+yarn diamond:init
+```
 
-## Learn More
+### Adding a facet
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+yarn diamond:add 0x3D004D6B32D5D6A5e7B7504c3dac672456ed95dB
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Generating typechains from metadata
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```bash
+yarn generate:typechain
+```
 
-## Deploy on Vercel
+## Next.js
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+When installing a facet the useDapp hooks are automatically available for the user, for example when add a ERC20 facet, this hooks will be available for the developer
+```typescript
+const { account, library, activateBrowserWallet } = useEthers()
+const useDiamond = generateUseDiamond(diamond.address,account ? (library?.getSigner() as any) : undefined)
+const balance = useDiamond.balanceOf('0xDEC3e07D46c46C089a323D62E60826D03716d7a2')
+const { state: stateInit, send: sendInitMyToken } = useDiamond.initMyToken
+const initToken = () => sendInitMyToken('SD','sd',8,'0xDEC3e07D46c46C089a323D62E60826D03716d7a2')
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Typechain
+
+When you add a facet using the flag `--save-metadata` the metadata of the facet is saved, so it can be used by typechain to generate the factory for that facet. You can use the following command or the shortcut above.
+```bash
+typechain --target=ethers-v5  metadata/*.json 
+```
+
+### useDapp
+
+Gemx offers `generateUseDiamond`, that automatically creates the `useCall` and `useContractFunction` for each function in the typechains factory specified.
+
+## Getting started
+
+1. Install dependencies
+```bash
+yarn install
+```
+
+2. Run local node (each time)
+```bash
+yarn node:start
+```
+
+3. Deploy the diamond on the local environment (each time if working with new local facets)
+```bash
+yarn diamond:init
+```
+
+4. Run next.js
+```bash
+yarn dev
+```
