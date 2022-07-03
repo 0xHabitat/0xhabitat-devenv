@@ -16,7 +16,7 @@ The diamond.json is not committed on github because its values depends on the lo
 ```bash
 npx hardhat diamond:init
 ```
-Generates a diamond.json file starting from a DOCKERFILE
+Generates a diamond.json file starting from a DIAMONDFILE
 
 ```bash
 npx hardhat diamond:deploy
