@@ -103,6 +103,36 @@ typechain --target=ethers-v5  metadata/*.json
 
 Gemx offers `generateUseDiamond`, that automatically creates the `useCall` and `useContractFunction` for each function in the typechains factory specified.
 
+In the util change the `factories` object, including the factories to include
+```typescript
+const factories: IFactories = {
+    MyToken: MyToken__factory,
+}
+```
+
+First import the `generateUseDiamond` util in the component.
+
+```typescript
+import generateUseDiamond from '../utils/generateUseDiamond'
+```
+
+Finally call `generateUseDiamond` passing 
+* the address of the diamond (you can take it using `import diamond from '../diamond.json'`)
+* the signer
+```typescript
+const { account, library, activateBrowserWallet } = useEthers()
+const useDiamond = generateUseDiamond(diamond.address,account ? (library?.getSigner() as any) : undefined)
+```
+In the useDiamond object you have:
+* the useCall hooks for the view functions
+```typescript
+const balance = useDiamond.balanceOf('0xDEC3e07D46c46C089a323D62E60826D03716d7a2')
+```
+* the useContractFunction hooks for the write functions
+```typescript
+const { state: stateInit, send: sendInitMyToken } = useDiamond.initMyToken
+```
+
 ## Getting started
 
 1. Install dependencies
