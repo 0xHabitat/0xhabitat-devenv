@@ -1415,10 +1415,10 @@
   resolved "https://registry.yarnpkg.com/@uniswap/token-lists/-/token-lists-1.0.0-beta.30.tgz#2103ca23b8007c59ec71718d34cdc97861c409e5"
   integrity sha512-HwY2VvkQ8lNR6ks5NqQfAtg+4IZqz3KV1T8d2DlI8emIn9uMmaoFbIOg0nzjqAVKKnZSbMTRRtUoAh6mmjRvog==
 
-"@usedapp/core@^1.0.15":
-  version "1.0.15"
-  resolved "https://registry.yarnpkg.com/@usedapp/core/-/core-1.0.15.tgz#66c982c13cf9aeb061b74fa6ad1f8ef6f7cd4fd2"
-  integrity sha512-dvjLiYVyutM25BiwiFlPjyhPVlLQA4Dg/WnN0Q8XPnWtyasM0mytxerGQMl0Um1WCtqQynV2R8SU5iQY723cCA==
+"@usedapp/core@1.1.2-dev.59c930a":
+  version "1.1.2-dev.59c930a"
+  resolved "https://registry.yarnpkg.com/@usedapp/core/-/core-1.1.2-dev.59c930a.tgz#0e65544684662951359304954b2a831dfe22cbbe"
+  integrity sha512-YN6hUnLfTivk/4aARg5Wu0OKquEzgKw96hP0L6YhuaB98WdePe5++DCeuqF6RzjZSf379Ln9OE9/J4xh/Dg8AQ==
   dependencies:
     "@metamask/detect-provider" "^1.2.0"
     "@uniswap/token-lists" "^1.0.0-beta.27"
