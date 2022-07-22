@@ -12,7 +12,8 @@ import { LibDiamond } from "./libraries/LibDiamond.sol";
 import { IDiamondCut } from "./interfaces/IDiamondCut.sol";
 import { IDiamondLoupe } from "./interfaces/IDiamondLoupe.sol";
 
-contract Diamond {    
+contract Diamond {
+    uint private _counter;
 
     constructor(address _contractOwner, address _diamondCutFacet, address _diamondLoupeFacet, address _facetsRepository) payable {        
         LibDiamond.setContractOwner(_contractOwner);
@@ -42,6 +43,22 @@ contract Diamond {
         });
 
         LibDiamond.diamondCut(cut, address(0), "");    
+    }
+
+    function exampleFunction(uint num) public pure returns (uint) {
+        return num;
+    }
+
+    function incrementCounter() public {
+        _counter++;
+    }
+
+    function increaseCounter(uint num) public {
+        _counter += num;
+    }
+
+    function getCounter() public view returns (uint) {
+        return _counter;
     }
 
     // Find facet for function that is called and execute the
