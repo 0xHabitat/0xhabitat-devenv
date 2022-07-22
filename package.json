@@ -9,14 +9,14 @@
     "lint": "next lint",
     "start:node": "hardhat node",
     "generate:typechain": "typechain --target=ethers-v5  artifacts/contracts/_diamond/Diamond.sol/Diamond.json ",
-    "generate:usedapp": "USEDAPP_OUT_DIR=./gen/hooks USEDAPP_TYPES_DIR=./types/ethers-contracts USEDAPP_ABIS_DIR=./artifacts/contracts/_diamond/Diamond.sol yarn usedapp-generate-hooks",
+    "generate:usedapp": "USEDAPP_OUT_DIR=./gen/hooks USEDAPP_TYPES_DIR=./types/ethers-contracts yarn usedapp-generate-hooks",
     "generate": "yarn generate:typechain && yarn generate:usedapp",
     "diamond:add": "hardhat diamond:add --remote --save-metadata --address ",
     "diamond:init": "hardhat diamond:init && yarn generate:typechain"
   },
   "dependencies": {
     "@solidstate/contracts": "^0.0.35",
-    "@usedapp/core": "1.1.2-dev.59c930a",
+    "@usedapp/core": "1.1.3",
     "hardhat-gemcutter": "https://github.com/marcocastignoli/hardhat-gemcutter",
     "next": "12.1.6",
     "react": "18.2.0",
